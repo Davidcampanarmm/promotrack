@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título actualizado -->
+    <title>PromoTracker - Gestión de Stock y Ventas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados y fuente */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eef2ff; /* Fondo más claro y moderno */
+        }
+        /* Clases de utilidad para el scroll */
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: #9ca3af; /* gris medio */
+            border-radius: 20px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background-color: #f9fafb;
+        }
+        /* Estilo para enfocar inputs */
+        .input-focus:focus {
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            border-color: #4f46e5; /* indigo-600 */
+        }
+
+        /* CLAVE: Contenedor de datos con altura calculada para scroll interno */
+        .data-container-height {
+            /* 100vh - header (aprox 100px) - main margin/padding/gap (aprox 150px) = 250px o 15rem de margen libre */
+            max-height: calc(100vh - 15rem); 
+            overflow-y: auto; /* Forzar scroll interno si se desborda */
+        }
+        @media (min-width: 1024px) { /* lg: breakpoint */
+            .data-container-height {
+                /* Altura más ajustada para aprovechar mejor el espacio en desktop */
+                max-height: calc(100vh - 10rem);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <header class="mb-10">
+        <!-- Título de la aplicación y botón de Métricas -->
+        <div class="flex items-center space-x-3 border-b-2 border-indigo-400 pb-3">
+            <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <h1 class="text-4xl font-extrabold text-gray-900">
+                PromoTracker
+            </h1>
+            <!-- Botón de Métricas NUEVO -->
+            <button id="openMetricsModalBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 shadow-md transform hover:scale-[1.02] text-sm flex items-center ml-auto">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"></path></svg>
+                Métricas
+            </button>
+        </div>
+        <p class="text-gray-500 mt-2 text-sm">Gestión centralizada de inventario y transacciones para promotores.</p>
+    </header>
+
+    <!-- Contenedor principal de dos columnas para el dashboard -->
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Columna 1: Gestión de Inventario (Ocupa 2/3 en desktop) -->
+        <section class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-xl border border-indigo-100 flex flex-col">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b pb-4 flex-shrink-0">
+                <h2 class="text-2xl font-bold text-gray-800">Inventario de Modelos</h2>
+                <button id="openStockModalBtn" class="mt-3 md:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02]">
+                    + Añadir Nuevo Stock
+                </button>
+            </div>
+
+            <!-- Tabla de Stock (CON SCROLL INTERNO) -->
+            <div class="data-container-height overflow-x-auto rounded-xl border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-indigo-50/50 sticky top-0"> <!-- Añadido sticky top-0 para encabezado de tabla -->
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Referencia
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Nombre Modelo
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Total Stock
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Expuesto
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Disponible (Venta)
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Enlace Online
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTableBody" class="bg-white divide-y divide-gray-100">
+                        <!-- Los datos del stock se insertarán aquí con JavaScript -->
+                    </tbody>
+                </table>
+                <!-- Mensaje de no hay datos DENTRO del contenedor de scroll -->
+                <p id="noStockMessage" class="text-center text-gray-500 py-10 hidden italic">
+                    Aún no hay elementos en el inventario. Haz clic en "Añadir Nuevo Stock" para comenzar.
+                </p>
+            </div>
+        </section>
+
+        <!-- Columna 2: Registro de Ventas/Devoluciones (Ocupa 1/3 en desktop) -->
+        <section class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-xl border border-emerald-100 flex flex-col">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b pb-4 flex-shrink-0">
+                <h2 class="text-2xl font-bold text-gray-800">Registro de Transacciones</h2>
+                <button id="openSalesModalBtn" class="mt-3 md:mt-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02]">
+                    + Registrar Transacción
+                </button>
+            </div>
+
+            <!-- Log de Transacciones (CON SCROLL INTERNO) -->
+            <div class="data-container-height scrollbar-thin">
+                <ul id="transactionsList" class="space-y-4">
+                    <!-- Las transacciones se insertarán aquí con JavaScript -->
+                </ul>
+                <!-- Mensaje de no hay datos DENTRO del contenedor de scroll -->
+                <p id="noTransactionsMessage" class="text-center text-gray-500 py-10 hidden italic">
+                    Aún no se han registrado ventas o devoluciones.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal para Métricas y Estadísticas Generales (NUEVO) -->
+    <div id="metricsModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="metricsModalContent">
+            <h3 class="text-3xl font-bold mb-6 border-b pb-3 text-purple-700 flex items-center">
+                <svg class="w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                Estadísticas Generales
+            </h3>
+            
+            <div id="metricsDashboard" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tarjeta 1: Stock Total -->
+                <div class="bg-purple-50 p-5 rounded-xl border border-purple-200 shadow-lg">
+                    <p class="text-sm font-medium text-purple-600">Total de Artículos en Stock</p>
+                    <p id="metricTotalStock" class="text-4xl font-extrabold text-purple-900 mt-2">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Unidades físicas registradas</p>
+                </div>
+
+                <!-- Tarjeta 2: Ventas Totales (simuladas) -->
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 shadow-lg">
+                    <p class="text-sm font-medium text-emerald-600">Ventas Netas (Unidades)</p>
+                    <p id="metricNetSales" class="text-4xl font-extrabold text-emerald-900 mt-2">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Ventas - Devoluciones</p>
+                </div>
+
+                <!-- Tarjeta 3: Modelos Únicos -->
+                <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 shadow-lg">
+                    <p class="text-sm font-medium text-indigo-600">Modelos Únicos Registrados</p>
+                    <p id="metricUniqueModels" class="text-4xl font-extrabold text-indigo-900 mt-2">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Diferentes referencias en inventario</p>
+                </div>
+
+                <!-- Tarjeta 4: Tasa de Devolución (simulada) -->
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-lg">
+                    <p class="text-sm font-medium text-red-600">Tasa de Devolución</p>
+                    <p id="metricReturnRate" class="text-4xl font-extrabold text-red-900 mt-2">0%</p>
+                    <p class="text-xs text-gray-500 mt-1">Devoluciones / Transacciones Totales</p>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-6 border-t mt-6">
+                <button type="button" onclick="closeModal('metricsModal')" class="px-6 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition duration-150 shadow-md font-semibold">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Añadir/Editar Stock -->
+    <div id="stockModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="stockModalContent">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-indigo-700">Añadir Nuevo Artículo</h3>
+            <form id="stockForm" onsubmit="handleStockSubmit(event)">
+                
+                <div class="mb-4">
+                    <label for="reference" class="block text-sm font-semibold text-gray-700">Referencia (SKU)</label>
+                    <input type="text" id="reference" required class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:ring-2 p-3 border">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="modelName" class="block text-sm font-semibold text-gray-700">Nombre del Modelo</label>
+                    <input type="text" id="modelName" required class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:ring-2 p-3 border">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="quantity" class="block text-sm font-semibold text-gray-700">Cantidad Total en Stock</label>
+                    <input type="number" id="quantity" required min="1" class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:ring-2 p-3 border">
+                </div>
+                
+                <div class="mb-4 flex items-center bg-indigo-50 p-3 rounded-lg border border-indigo-200">
+                    <input type="checkbox" id="isExposed" class="h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                    <label for="isExposed" class="ml-3 block text-sm font-medium text-gray-800">¿Artículo expuesto en vitrina? (Se resta 1 al stock vendible)</label>
+                </div>
+
+                <div class="mb-6">
+                    <label for="onlineLink" class="block text-sm font-semibold text-gray-700">Enlace a Tienda Online (Opcional)</label>
+                    <input type="url" id="onlineLink" class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:ring-2 p-3 border" placeholder="https://tu-tienda.com/producto">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal('stockModal')" class="px-5 py-2 text-gray-700 border border-gray-300 bg-white rounded-xl hover:bg-gray-100 transition duration-150 font-medium">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition duration-150 shadow-md font-semibold">Guardar Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Registrar Transacción (Venta/Devolución) -->
+    <div id="salesModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="salesModalContent">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-emerald-700">Registrar Venta o Devolución</h3>
+            <form id="salesForm" onsubmit="handleSalesSubmit(event)">
+                
+                <!-- Campo de Fecha (NUEVO) -->
+                <div class="mb-4">
+                    <label for="transactionDate" class="block text-sm font-semibold text-gray-700">Fecha de la Transacción</label>
+                    <input type="date" id="transactionDate" required class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:ring-2 p-3 border">
+                </div>
+
+                <div class="mb-6">
+                    <label for="transactionReference" class="block text-sm font-semibold text-gray-700">Referencia del Producto</label>
+                    <select id="transactionReference" required class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:ring-2 p-3 border">
+                        <option value="" disabled selected>Selecciona una referencia...</option>
+                        <!-- Opciones de referencias se cargan con JS -->
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="transactionType" class="block text-sm font-semibold text-gray-700">Tipo de Transacción</label>
+                    <select id="transactionType" required class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:ring-2 p-3 border">
+                        <option value="Sale">Venta (-1 al Stock)</option>
+                        <option value="Return">Devolución (+1 al Stock)</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal('salesModal')" class="px-5 py-2 text-gray-700 border border-gray-300 bg-white rounded-xl hover:bg-gray-100 transition duration-150 font-medium">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition duration-150 shadow-md font-semibold">Registrar Transacción</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Mensajes (Personalizado, reemplaza alert/confirm) -->
+    <div id="messageModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="messageModalContent">
+            <h3 id="messageTitle" class="text-xl font-bold mb-4 border-b pb-2 text-indigo-700"></h3>
+            <p id="messageContent" class="mb-6 text-gray-700"></p>
+            <div class="flex justify-end">
+                <button type="button" onclick="closeModal('messageModal')" class="px-5 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition duration-150 shadow-md font-semibold">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Clave de localStorage para guardar los datos
+        const STORAGE_KEY = 'promotorDashboardData_v2'; // Cambiado para evitar conflictos con la versión anterior
+        let data = { stock: [], transactions: [] };
+
+        // --- Funciones de Utilidad y Almacenamiento ---
+
+        /**
+         * Muestra un modal con animaciones.
+         * @param {string} modalId - ID del elemento modal a mostrar.
+         */
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                if (content) {
+                    content.style.transform = 'scale(1)';
+                    content.style.opacity = '1';
+                }
+            }, 10); // Pequeño retraso para iniciar la transición
+        }
+
+        /**
+         * Oculta un modal con animaciones.
+         * @param {string} modalId - ID del elemento modal a ocultar.
+         */
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            modal.style.opacity = '0';
+            if (content) {
+                content.style.transform = 'scale(0.95)';
+                content.style.opacity = '0';
+            }
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Espera a que termine la transición
+        }
+
+        /**
+         * Muestra un mensaje al usuario.
+         * @param {string} title - Título del mensaje.
+         * @param {string} content - Contenido del mensaje.
+         * @param {string} type - 'success', 'error', 'warning' (determina el color del título).
+         */
+        function showMessage(title, content, type = 'success') {
+            const titleElement = document.getElementById('messageTitle');
+            const buttonElement = document.querySelector('#messageModal button');
+            
+            // Limpiar clases de color
+            titleElement.classList.remove('text-indigo-700', 'text-red-600', 'text-amber-600');
+            buttonElement.classList.remove('bg-indigo-600', 'bg-red-600', 'bg-amber-600', 'hover:bg-indigo-700', 'hover:bg-red-700', 'hover:bg-amber-700');
+            
+            // Aplicar colores según el tipo
+            if (type === 'error') {
+                titleElement.classList.add('text-red-600');
+                buttonElement.classList.add('bg-red-600', 'hover:bg-red-700');
+            } else if (type === 'warning') {
+                titleElement.classList.add('text-amber-600');
+                buttonElement.classList.add('bg-amber-600', 'hover:bg-amber-700');
+            } else { // default success
+                titleElement.classList.add('text-indigo-700');
+                buttonElement.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            }
+
+            titleElement.textContent = title;
+            document.getElementById('messageContent').textContent = content;
+            openModal('messageModal');
+        }
+
+        /**
+         * Carga los datos desde localStorage.
+         */
+        function loadData() {
+            const storedData = localStorage.getItem(STORAGE_KEY);
+            if (storedData) {
+                try {
+                    data = JSON.parse(storedData);
+                    // Asegurar que las estructuras existan
+                    if (!data.stock) data.stock = [];
+                    if (!data.transactions) data.transactions = [];
+                } catch (e) {
+                    console.error("Error al parsear datos de localStorage:", e);
+                    // Si falla, inicializa con datos vacíos
+                    data = { stock: [], transactions: [] };
+                }
+            }
+        }
+
+        /**
+         * Guarda los datos en localStorage.
+         */
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+        
+        // --- Gestión de Stock ---
+
+        /**
+         * Calcula la cantidad vendible (total - expuesto).
+         * @param {number} total - Cantidad total en stock.
+         * @param {boolean} isExposed - Indica si está expuesto.
+         * @returns {number} Cantidad disponible para la venta.
+         */
+        function calculateSellable(total, isExposed) {
+            // Si está expuesto Y hay suficiente stock, resta 1
+            const count = total > 0 ? total : 0;
+            if (isExposed && count > 0) {
+                return count - 1;
+            }
+            return count;
+        }
+
+        /**
+         * Maneja el envío del formulario de stock (añadir nuevo).
+         * @param {Event} event - Evento de envío del formulario.
+         */
+        function handleStockSubmit(event) {
+            event.preventDefault();
+
+            const reference = document.getElementById('reference').value.toUpperCase().trim();
+            const modelName = document.getElementById('modelName').value.trim();
+            const quantity = parseInt(document.getElementById('quantity').value, 10);
+            const isExposed = document.getElementById('isExposed').checked;
+            const onlineLink = document.getElementById('onlineLink').value.trim();
+            
+            // Validar que la referencia no exista
+            const existingItem = data.stock.find(item => item.reference === reference);
+            if (existingItem) {
+                showMessage("Error de Referencia", `La referencia "${reference}" ya existe. Por favor, utiliza otra.`, 'error');
+                return;
+            }
+
+            const sellableQuantity = calculateSellable(quantity, isExposed);
+
+            const newItem = {
+                reference,
+                name: modelName,
+                quantity,
+                isExposed,
+                onlineLink: onlineLink || null, // Guardar null si está vacío
+                sellableQuantity
+            };
+
+            data.stock.push(newItem);
+            saveData();
+            renderAll();
+            closeModal('stockModal');
+            document.getElementById('stockForm').reset();
+            showMessage("Stock Añadido", `Stock del modelo "${modelName}" (${reference}) añadido correctamente.`);
+        }
+
+        /**
+         * Renderiza la tabla de stock.
+         */
+        function renderStock() {
+            const tableBody = document.getElementById('stockTableBody');
+            const noStockMessage = document.getElementById('noStockMessage');
+            tableBody.innerHTML = ''; // Limpiar la tabla
+
+            if (data.stock.length === 0) {
+                noStockMessage.classList.remove('hidden');
+                return;
+            }
+            noStockMessage.classList.add('hidden');
+
+            data.stock.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-indigo-50 transition duration-150';
+
+                // Determinar el color de la cantidad vendible
+                let sellableClass = 'text-gray-800';
+                if (item.sellableQuantity <= 0) {
+                    sellableClass = 'text-red-600 font-bold bg-red-50/50';
+                } else if (item.sellableQuantity <= 2) {
+                    sellableClass = 'text-amber-600 font-semibold';
+                }
+                
+                // Icono y color para "Expuesto"
+                const exposedIndicator = item.isExposed 
+                    ? `<span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center shadow-sm">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+                        SÍ
+                      </span>`
+                    : `<span class="bg-gray-100 text-gray-500 text-xs font-medium px-3 py-1 rounded-full">NO</span>`;
+
+                // Enlace Online
+                const onlineLinkHtml = item.onlineLink 
+                    ? `<a href="${item.onlineLink}" target="_blank" class="text-indigo-500 hover:text-indigo-700 transition duration-150 transform hover:scale-110" title="Ver Producto Online">
+                        <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                      </a>`
+                    : '<span class="text-gray-400">—</span>';
+
+                row.innerHTML = `
+                    <td class="px-6 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">${item.reference}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600">${item.name}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-center">${item.quantity}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-center">${exposedIndicator}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-center ${sellableClass}">${item.sellableQuantity}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-center">${onlineLinkHtml}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // --- Gestión de Ventas/Devoluciones ---
+
+        /**
+         * Rellena el select de referencias en el modal de ventas.
+         */
+        function populateSalesReferences() {
+            const select = document.getElementById('transactionReference');
+            // Guardar la opción por defecto
+            const defaultOption = select.querySelector('option[disabled]'); 
+            
+            // Limpiar y añadir la opción por defecto
+            select.innerHTML = '';
+            
+            // Si no hay opción deshabilitada, crearla (para asegurar que siempre haya una)
+            if (defaultOption) {
+                select.appendChild(defaultOption);
+            } else {
+                const newDefaultOption = document.createElement('option');
+                newDefaultOption.value = "";
+                newDefaultOption.textContent = "Selecciona una referencia...";
+                newDefaultOption.disabled = true;
+                newDefaultOption.selected = true;
+                select.appendChild(newDefaultOption);
+            }
+
+
+            if (data.stock.length > 0) {
+                // Filtrar solo los que tienen stock disponible para la venta
+                const availableStock = data.stock.filter(item => item.sellableQuantity >= 0);
+
+                if (availableStock.length === 0) {
+                    const noStockOption = document.createElement('option');
+                    noStockOption.value = "";
+                    noStockOption.textContent = "No hay stock disponible para transacciones.";
+                    noStockOption.disabled = true;
+                    select.appendChild(noStockOption);
+                    return;
+                }
+
+                availableStock.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.reference;
+                    // Mostrar cantidad vendible en el select
+                    option.textContent = `${item.reference} - ${item.name} (Disp: ${item.sellableQuantity})`;
+                    select.appendChild(option);
+                });
+            }
+        }
+        
+        /**
+         * Maneja el envío del formulario de ventas/devoluciones.
+         * @param {Event} event - Evento de envío del formulario.
+         */
+        function handleSalesSubmit(event) {
+            event.preventDefault();
+
+            const reference = document.getElementById('transactionReference').value;
+            const type = document.getElementById('transactionType').value; // 'Sale' o 'Return'
+            const dateInput = document.getElementById('transactionDate').value; // Fecha: YYYY-MM-DD
+            
+            let stockItem = data.stock.find(item => item.reference === reference);
+
+            if (!stockItem) {
+                showMessage("Error", "Referencia no encontrada. Esto no debería pasar.", 'error');
+                return;
+            }
+
+            let quantityChange = 0;
+            let message = "";
+
+            if (type === 'Sale') {
+                if (stockItem.sellableQuantity <= 0) {
+                    showMessage("Advertencia", `No hay stock disponible para la venta para la referencia ${reference}.`, 'warning');
+                    return;
+                }
+                quantityChange = -1;
+                message = "Venta registrada con éxito. Stock total y disponible actualizado.";
+            } else if (type === 'Return') {
+                quantityChange = 1;
+                message = "Devolución registrada con éxito. Stock total y disponible actualizado.";
+            }
+
+            // 1. Actualizar el stock total
+            stockItem.quantity += quantityChange;
+            // 2. Recalcular la cantidad vendible
+            stockItem.sellableQuantity = calculateSellable(stockItem.quantity, stockItem.isExposed);
+
+            // Formatear la fecha para la visualización
+            const transactionDate = new Date(dateInput + 'T00:00:00'); // Añadir T00:00:00 para evitar problemas de zona horaria
+            const displayDate = transactionDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+            
+            // 3. Registrar la transacción
+            const newTransaction = {
+                id: Date.now(), 
+                reference: reference,
+                type: type,
+                date: dateInput, // Almacenar ISO date para ordenamiento
+                displayDate: displayDate, // Almacenar fecha formateada para mostrar
+                quantityChange: quantityChange
+            };
+
+            data.transactions.push(newTransaction);
+
+            saveData();
+            renderAll();
+            closeModal('salesModal');
+            document.getElementById('salesForm').reset();
+            showMessage("Transacción Exitosa", message);
+        }
+
+        /**
+         * Renderiza la lista de transacciones.
+         */
+        function renderTransactions() {
+            const list = document.getElementById('transactionsList');
+            const noTransactionsMessage = document.getElementById('noTransactionsMessage');
+            list.innerHTML = '';
+
+            if (data.transactions.length === 0) {
+                noTransactionsMessage.classList.remove('hidden');
+                return;
+            }
+            noTransactionsMessage.classList.add('hidden');
+            
+            // Ordenar por fecha (más reciente primero) usando el campo 'date' ISO string
+            const sortedTransactions = [...data.transactions].sort((a, b) => {
+                // Usar 'date' para ordenar. Para transacciones antiguas que no tienen 'date', usar 'id' (timestamp)
+                const dateA = a.date || new Date(a.id).toISOString().split('T')[0];
+                const dateB = b.date || new Date(b.id).toISOString().split('T')[0];
+                return dateB.localeCompare(dateA); // Más reciente primero (descendente)
+            });
+
+            sortedTransactions.forEach(t => {
+                const isSale = t.type === 'Sale';
+                const bgColor = isSale ? 'bg-red-50' : 'bg-emerald-50';
+                const textColor = isSale ? 'text-red-700' : 'text-emerald-700';
+                const verb = isSale ? 'Venta' : 'Devolución';
+                // Iconos más descriptivos
+                const iconPath = isSale 
+                    ? 'M17 14l-5-5-5 5m0 5h10' // Flecha hacia abajo/fuera (venta)
+                    : 'M7 10l5 5 5-5m0-5H7';  // Flecha hacia arriba/dentro (devolución)
+
+                const stockName = data.stock.find(i => i.reference === t.reference)?.name || 'Modelo Desconocido';
+                
+                // Usar la fecha formateada guardada (displayDate), o si es una transacción antigua, generar el formato local
+                const displayDate = t.displayDate || new Date(t.id).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+
+
+                const listItem = document.createElement('li');
+                listItem.className = `${bgColor} p-4 rounded-xl shadow-md flex justify-between items-center transform transition duration-200 hover:scale-[1.01] border-l-4 ${isSale ? 'border-red-500' : 'border-emerald-500'}`;
+
+                listItem.innerHTML = `
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 mr-3 ${textColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPath}"></path></svg>
+                        <div>
+                            <p class="font-bold ${textColor} text-base">${verb} de ${t.reference}</p>
+                            <p class="text-xs text-gray-600 mt-0.5">${stockName}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs font-medium text-gray-500">${displayDate}</p>
+                        <p class="font-extrabold ${textColor} text-lg">${t.quantityChange > 0 ? '+' : ''}${t.quantityChange}</p>
+                    </div>
+                `;
+                list.appendChild(listItem);
+            });
+        }
+        
+        // --- Gestión de Métricas (NUEVO) ---
+
+        /**
+         * Calcula y renderiza las métricas generales.
+         */
+        function renderMetrics() {
+            // Métricas de Stock
+            const totalStock = data.stock.reduce((sum, item) => sum + item.quantity, 0);
+            const uniqueModels = data.stock.length;
+
+            // Métricas de Transacciones
+            const totalTransactions = data.transactions.length;
+            const totalSales = data.transactions.filter(t => t.type === 'Sale').length;
+            const totalReturns = data.transactions.filter(t => t.type === 'Return').length;
+            const netSales = totalSales - totalReturns;
+            
+            // Tasa de Devolución (Devoluciones / Total Transacciones, si totalTransactions > 0)
+            const absoluteTransactions = totalSales + totalReturns;
+            const returnRate = absoluteTransactions > 0 
+                ? ((totalReturns / absoluteTransactions) * 100).toFixed(1) 
+                : 0;
+
+            // Renderizar en el Modal
+            document.getElementById('metricTotalStock').textContent = totalStock.toLocaleString('es-ES');
+            document.getElementById('metricNetSales').textContent = netSales.toLocaleString('es-ES');
+            document.getElementById('metricUniqueModels').textContent = uniqueModels.toLocaleString('es-ES');
+            document.getElementById('metricReturnRate').textContent = `${returnRate}%`;
+
+            // Establecer color para la Tasa de Devolución (simulación de alerta)
+            const rateElement = document.getElementById('metricReturnRate');
+            rateElement.classList.remove('text-red-900', 'text-emerald-900', 'text-gray-900');
+            if (returnRate > 0 && returnRate <= 5) {
+                rateElement.classList.add('text-emerald-900');
+            } else if (returnRate > 5) {
+                 rateElement.classList.add('text-red-900');
+            } else {
+                 rateElement.classList.add('text-gray-900');
+            }
+        }
+
+        // --- Inicialización y Eventos ---
+
+        /**
+         * Renderiza todo el dashboard (stock y transacciones).
+         */
+        function renderAll() {
+            renderStock();
+            renderTransactions();
+            renderMetrics(); // Renderizar métricas también
+            populateSalesReferences(); // Asegura que el select de ventas esté actualizado
+        }
+
+        // Event Listeners para abrir los modales
+        document.getElementById('openStockModalBtn').addEventListener('click', () => {
+            document.getElementById('stockForm').reset();
+            // Asegura que el foco del input esté limpio si es un nuevo item
+            document.getElementById('reference').focus(); 
+            openModal('stockModal');
+        });
+
+        document.getElementById('openSalesModalBtn').addEventListener('click', () => {
+            // Asegurarse de que haya stock antes de abrir el modal de ventas
+            if (data.stock.length === 0) {
+                showMessage("Advertencia", "No puedes registrar transacciones sin tener stock. ¡Añade primero algunos artículos!", 'warning');
+            } else {
+                populateSalesReferences();
+                document.getElementById('salesForm').reset();
+                
+                // Establecer la fecha predeterminada a hoy (YYYY-MM-DD)
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('transactionDate').value = today;
+
+                openModal('salesModal');
+            }
+        });
+        
+        // Event Listener para abrir el modal de Métricas (NUEVO)
+        document.getElementById('openMetricsModalBtn').addEventListener('click', () => {
+            renderMetrics(); // Asegurar que las métricas estén actualizadas
+            openModal('metricsModal');
+        });
+
+        // Carga inicial de datos al cargar la página
+        window.onload = function() {
+            loadData();
+            renderAll();
+        };
+
+    </script>
+</body>
+</html>
