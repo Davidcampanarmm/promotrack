@@ -54,11 +54,20 @@
             <h1 class="text-4xl font-extrabold text-gray-900">
                 PromoTracker
             </h1>
-            <!-- Botón de Métricas NUEVO -->
-            <button id="openMetricsModalBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 shadow-md transform hover:scale-[1.02] text-sm flex items-center ml-auto">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"></path></svg>
-                Métricas
-            </button>
+            <!-- Contenedor de Botones de Cabecera (Alineados a la derecha) -->
+            <div class="ml-auto flex space-x-3">
+                
+                <!-- Botón de Configuración (NUEVO) -->
+                <button id="openConfigModalBtn" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 shadow-md transform hover:scale-[1.02] text-sm flex items-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.298.608 3.3 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+
+                <!-- Botón de Métricas -->
+                <button id="openMetricsModalBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-200 shadow-md transform hover:scale-[1.02] text-sm flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"></path></svg>
+                    Métricas
+                </button>
+            </div>
         </div>
         <p class="text-gray-500 mt-2 text-sm">Gestión centralizada de inventario y transacciones para promotores.</p>
     </header>
@@ -91,6 +100,9 @@
                             </th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
                                 Expuesto
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+                                Reservado
                             </th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-indigo-700 uppercase tracking-wider">
                                 Disponible (Venta)
@@ -134,7 +146,53 @@
 
     </main>
 
-    <!-- Modal para Métricas y Estadísticas Generales (NUEVO) -->
+    <!-- Modal para Configuración (NUEVO) -->
+    <div id="configModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="configModalContent">
+            <h3 class="text-3xl font-bold mb-6 border-b pb-3 text-gray-700 flex items-center">
+                <svg class="w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.298.608 3.3 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Configuración y Datos
+            </h3>
+            
+            <div class="space-y-8">
+                
+                <!-- Sección de Exportación -->
+                <div class="bg-gray-50 p-5 rounded-xl border border-gray-200 shadow-inner">
+                    <h4 class="text-xl font-semibold mb-3 text-indigo-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Exportar Datos
+                    </h4>
+                    <p class="text-sm text-gray-600 mb-4">Descarga un archivo JSON con todo tu inventario y historial de transacciones. Útil para copias de seguridad o migración.</p>
+                    <button onclick="exportData()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl transition duration-150 shadow-md flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar Archivo de Respaldo (.json)
+                    </button>
+                </div>
+
+                <!-- Sección de Importación -->
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-inner">
+                    <h4 class="text-xl font-semibold mb-3 text-red-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Importar Datos (Restaurar)
+                    </h4>
+                    <p class="text-sm text-red-600 mb-4 font-semibold">ADVERTENCIA: Esto SOBREESCRIBIRÁ todos tus datos actuales. Solo importa archivos JSON generados por esta aplicación.</p>
+                    <form id="importForm" onsubmit="handleImport(event)">
+                        <input type="file" id="importFile" accept=".json" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-red-200"/>
+                        <button type="submit" class="mt-4 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition duration-150 shadow-md flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 014 4v1.582m-4.25-2.582a1 1 0 00-1.75 0L14 11.5v4.5m-7.5-6.5a1 1 0 00-1.75 0L5.5 11.5v4.5"></path></svg>
+                            Cargar y Restaurar Datos
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-6 border-t mt-6">
+                <button type="button" onclick="closeModal('configModal')" class="px-6 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition duration-150 shadow-md font-semibold">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Métricas y Estadísticas Generales (Existente) -->
     <div id="metricsModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="metricsModalContent">
             <h3 class="text-3xl font-bold mb-6 border-b pb-3 text-purple-700 flex items-center">
@@ -150,7 +208,7 @@
                     <p class="text-xs text-gray-500 mt-1">Unidades físicas registradas</p>
                 </div>
 
-                <!-- Tarjeta 2: Ventas Totales (simuladas) -->
+                <!-- Tarjeta 2: Ventas Netas -->
                 <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 shadow-lg">
                     <p class="text-sm font-medium text-emerald-600">Ventas Netas (Unidades)</p>
                     <p id="metricNetSales" class="text-4xl font-extrabold text-emerald-900 mt-2">0</p>
@@ -178,7 +236,7 @@
         </div>
     </div>
 
-    <!-- Modal para Añadir/Editar Stock -->
+    <!-- Modal para Añadir/Editar Stock (Existente) -->
     <div id="stockModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="stockModalContent">
             <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-indigo-700">Añadir Nuevo Artículo</h3>
@@ -201,7 +259,7 @@
                 
                 <div class="mb-4 flex items-center bg-indigo-50 p-3 rounded-lg border border-indigo-200">
                     <input type="checkbox" id="isExposed" class="h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                    <label for="isExposed" class="ml-3 block text-sm font-medium text-gray-800">¿Artículo expuesto en vitrina? (Se resta 1 al stock vendible)</label>
+                    <label for="isExposed" class="ml-3 block text-sm font-medium text-gray-800">¿Artículo expuesto en vitrina? (Se resta 1 del stock vendible)</label>
                 </div>
 
                 <div class="mb-6">
@@ -217,10 +275,10 @@
         </div>
     </div>
 
-    <!-- Modal para Registrar Transacción (Venta/Devolución) -->
+    <!-- Modal para Registrar Transacción (Venta/Devolución/Reserva) (Existente) -->
     <div id="salesModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="salesModalContent">
-            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-emerald-700">Registrar Venta o Devolución</h3>
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-emerald-700">Registrar Transacción</h3>
             <form id="salesForm" onsubmit="handleSalesSubmit(event)">
                 
                 <!-- Campo de Fecha (NUEVO) -->
@@ -242,6 +300,7 @@
                     <select id="transactionType" required class="input-focus mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:ring-2 p-3 border">
                         <option value="Sale">Venta (-1 al Stock)</option>
                         <option value="Return">Devolución (+1 al Stock)</option>
+                        <option value="Reservation">Reservado (+1 al Reservado, No resta Stock)</option>
                     </select>
                 </div>
                 
@@ -253,7 +312,7 @@
         </div>
     </div>
 
-    <!-- Modal de Mensajes (Personalizado, reemplaza alert/confirm) -->
+    <!-- Modal de Mensajes (Personalizado, reemplaza alert/confirm) (Existente) -->
     <div id="messageModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 transform transition-transform duration-300 scale-95 opacity-0" id="messageModalContent">
             <h3 id="messageTitle" class="text-xl font-bold mb-4 border-b pb-2 text-indigo-700"></h3>
@@ -266,7 +325,7 @@
 
     <script>
         // Clave de localStorage para guardar los datos
-        const STORAGE_KEY = 'promotorDashboardData_v2'; // Cambiado para evitar conflictos con la versión anterior
+        const STORAGE_KEY = 'promotorDashboardData_v3'; // Versión 3 para el campo de reserva
         let data = { stock: [], transactions: [] };
 
         // --- Funciones de Utilidad y Almacenamiento ---
@@ -344,9 +403,17 @@
             if (storedData) {
                 try {
                     data = JSON.parse(storedData);
-                    // Asegurar que las estructuras existan
+                    // Asegurar que las estructuras existan e inicializar nuevos campos
                     if (!data.stock) data.stock = [];
                     if (!data.transactions) data.transactions = [];
+                    
+                    // Inicializar el nuevo campo 'reservedQuantity' si no existe
+                    data.stock.forEach(item => {
+                        if (typeof item.reservedQuantity === 'undefined') {
+                            item.reservedQuantity = 0;
+                        }
+                    });
+
                 } catch (e) {
                     console.error("Error al parsear datos de localStorage:", e);
                     // Si falla, inicializa con datos vacíos
@@ -361,22 +428,27 @@
         function saveData() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
-        
+
         // --- Gestión de Stock ---
 
         /**
-         * Calcula la cantidad vendible (total - expuesto).
-         * @param {number} total - Cantidad total en stock.
-         * @param {boolean} isExposed - Indica si está expuesto.
+         * Calcula la cantidad vendible (total - expuesto - reservado).
+         * @param {object} item - Objeto de stock.
          * @returns {number} Cantidad disponible para la venta.
          */
-        function calculateSellable(total, isExposed) {
-            // Si está expuesto Y hay suficiente stock, resta 1
-            const count = total > 0 ? total : 0;
-            if (isExposed && count > 0) {
-                return count - 1;
-            }
-            return count;
+        function calculateSellable(item) {
+            const total = item.quantity > 0 ? item.quantity : 0;
+            const exposed = item.isExposed ? 1 : 0;
+            const reserved = item.reservedQuantity || 0; // Usar el nuevo campo
+            
+            // El stock disponible para VENTA es el total menos el expuesto
+            let sellable = total - exposed;
+
+            // Restar las unidades reservadas del stock total (para la gestión interna, no para el indicador de venta rápida)
+            // Pero para efectos de "Disponible (Venta)", la reserva ya cuenta como un compromiso de venta, por lo que lo restamos.
+            sellable -= reserved;
+            
+            return Math.max(0, sellable); // Nunca mostrar negativo
         }
 
         /**
@@ -399,16 +471,17 @@
                 return;
             }
 
-            const sellableQuantity = calculateSellable(quantity, isExposed);
-
             const newItem = {
                 reference,
                 name: modelName,
                 quantity,
                 isExposed,
                 onlineLink: onlineLink || null, // Guardar null si está vacío
-                sellableQuantity
+                reservedQuantity: 0 // Nuevo campo inicializado en 0
             };
+            
+            // Recalcular el stock vendible
+            newItem.sellableQuantity = calculateSellable(newItem);
 
             data.stock.push(newItem);
             saveData();
@@ -451,6 +524,13 @@
                         SÍ
                       </span>`
                     : `<span class="bg-gray-100 text-gray-500 text-xs font-medium px-3 py-1 rounded-full">NO</span>`;
+                
+                // Indicador de Reservado (NUEVO)
+                const reservedCount = item.reservedQuantity || 0;
+                let reservedClass = 'text-gray-600';
+                if (reservedCount > 0) {
+                    reservedClass = 'text-blue-700 font-semibold bg-blue-50/50';
+                }
 
                 // Enlace Online
                 const onlineLinkHtml = item.onlineLink 
@@ -464,6 +544,7 @@
                     <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600">${item.name}</td>
                     <td class="px-6 py-3 whitespace-nowrap text-sm text-center">${item.quantity}</td>
                     <td class="px-6 py-3 whitespace-nowrap text-sm text-center">${exposedIndicator}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-center ${reservedClass}">${reservedCount}</td>
                     <td class="px-6 py-3 whitespace-nowrap text-sm text-center ${sellableClass}">${item.sellableQuantity}</td>
                     <td class="px-6 py-3 whitespace-nowrap text-sm text-center">${onlineLinkHtml}</td>
                 `;
@@ -471,7 +552,7 @@
             });
         }
 
-        // --- Gestión de Ventas/Devoluciones ---
+        // --- Gestión de Transacciones (Venta/Devolución/Reserva/Reclamo) ---
 
         /**
          * Rellena el select de referencias en el modal de ventas.
@@ -484,7 +565,6 @@
             // Limpiar y añadir la opción por defecto
             select.innerHTML = '';
             
-            // Si no hay opción deshabilitada, crearla (para asegurar que siempre haya una)
             if (defaultOption) {
                 select.appendChild(defaultOption);
             } else {
@@ -498,37 +578,37 @@
 
 
             if (data.stock.length > 0) {
-                // Filtrar solo los que tienen stock disponible para la venta
-                const availableStock = data.stock.filter(item => item.sellableQuantity >= 0);
+                // Permitir transacciones para cualquier item que no tenga stock total 0.
+                const transactableStock = data.stock.filter(item => item.quantity > 0 || item.reservedQuantity > 0);
 
-                if (availableStock.length === 0) {
+                if (transactableStock.length === 0) {
                     const noStockOption = document.createElement('option');
                     noStockOption.value = "";
-                    noStockOption.textContent = "No hay stock disponible para transacciones.";
+                    noStockOption.textContent = "No hay stock o reservas disponibles para transacciones.";
                     noStockOption.disabled = true;
                     select.appendChild(noStockOption);
                     return;
                 }
 
-                availableStock.forEach(item => {
+                transactableStock.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.reference;
-                    // Mostrar cantidad vendible en el select
-                    option.textContent = `${item.reference} - ${item.name} (Disp: ${item.sellableQuantity})`;
+                    // Mostrar cantidad total y reservada en el select
+                    option.textContent = `${item.reference} - ${item.name} (Total: ${item.quantity}, Res: ${item.reservedQuantity})`;
                     select.appendChild(option);
                 });
             }
         }
         
         /**
-         * Maneja el envío del formulario de ventas/devoluciones.
+         * Maneja el envío del formulario de ventas/devoluciones/reservas.
          * @param {Event} event - Evento de envío del formulario.
          */
         function handleSalesSubmit(event) {
             event.preventDefault();
 
             const reference = document.getElementById('transactionReference').value;
-            const type = document.getElementById('transactionType').value; // 'Sale' o 'Return'
+            const type = document.getElementById('transactionType').value; // 'Sale', 'Return', o 'Reservation'
             const dateInput = document.getElementById('transactionDate').value; // Fecha: YYYY-MM-DD
             
             let stockItem = data.stock.find(item => item.reference === reference);
@@ -540,23 +620,33 @@
 
             let quantityChange = 0;
             let message = "";
+            let newTransactionType = type; // El tipo de transacción a registrar
 
             if (type === 'Sale') {
                 if (stockItem.sellableQuantity <= 0) {
-                    showMessage("Advertencia", `No hay stock disponible para la venta para la referencia ${reference}.`, 'warning');
+                    showMessage("Advertencia", `No hay stock DISPONIBLE (Total: ${stockItem.quantity}, Expuesto: ${stockItem.isExposed ? 1 : 0}, Reservado: ${stockItem.reservedQuantity}) para la venta para la referencia ${reference}.`, 'warning');
                     return;
                 }
                 quantityChange = -1;
+                stockItem.quantity += quantityChange; // Restar del stock total
                 message = "Venta registrada con éxito. Stock total y disponible actualizado.";
             } else if (type === 'Return') {
                 quantityChange = 1;
+                stockItem.quantity += quantityChange; // Añadir al stock total
                 message = "Devolución registrada con éxito. Stock total y disponible actualizado.";
+            } else if (type === 'Reservation') {
+                if (stockItem.sellableQuantity <= 0) {
+                    showMessage("Advertencia", `No puedes reservar el último artículo si no hay stock disponible (Total: ${stockItem.quantity}, Expuesto: ${stockItem.isExposed ? 1 : 0}, Reservado: ${stockItem.reservedQuantity}).`, 'warning');
+                    return;
+                }
+                // Las reservas no cambian el stock físico (quantity), solo el stock reservado
+                stockItem.reservedQuantity += 1;
+                quantityChange = 1; // +1 al contador de reservas
+                message = "Reserva registrada con éxito. El stock disponible se ha reducido en 1.";
             }
-
-            // 1. Actualizar el stock total
-            stockItem.quantity += quantityChange;
-            // 2. Recalcular la cantidad vendible
-            stockItem.sellableQuantity = calculateSellable(stockItem.quantity, stockItem.isExposed);
+            
+            // Recalcular la cantidad vendible después de cualquier cambio
+            stockItem.sellableQuantity = calculateSellable(stockItem);
 
             // Formatear la fecha para la visualización
             const transactionDate = new Date(dateInput + 'T00:00:00'); // Añadir T00:00:00 para evitar problemas de zona horaria
@@ -566,7 +656,7 @@
             const newTransaction = {
                 id: Date.now(), 
                 reference: reference,
-                type: type,
+                type: newTransactionType,
                 date: dateInput, // Almacenar ISO date para ordenamiento
                 displayDate: displayDate, // Almacenar fecha formateada para mostrar
                 quantityChange: quantityChange
@@ -582,6 +672,59 @@
         }
 
         /**
+         * Maneja el reclamo (venta) de una transacción de reserva.
+         * @param {number} transactionId - ID de la transacción de reserva.
+         */
+        function handleClaimReservation(transactionId) {
+            const transaction = data.transactions.find(t => t.id === transactionId);
+            let stockItem = data.stock.find(item => item.reference === transaction.reference);
+
+            if (!transaction || transaction.type !== 'Reservation' || transaction.claimed) {
+                showMessage("Error", "Transacción de reserva inválida o ya reclamada.", 'error');
+                return;
+            }
+            if (!stockItem || stockItem.reservedQuantity <= 0) {
+                 showMessage("Error", "No se puede reclamar la reserva: El contador de reservas de stock es 0.", 'error');
+                return;
+            }
+            if (stockItem.quantity <= 0) {
+                // Esto podría pasar si el stock total se agotó después de la reserva
+                showMessage("Advertencia", "El stock físico de este modelo es 0. Se registra el reclamo, pero la reserva se hizo con un artículo que ya no está físicamente.", 'warning');
+            }
+
+
+            // 1. Marcar la transacción original como reclamada
+            transaction.claimed = true;
+            transaction.claimedDate = new Date().toISOString().split('T')[0];
+
+            // 2. Reducir el stock total
+            stockItem.quantity -= 1;
+            
+            // 3. Reducir el contador de reservas (el stock "vendible" se actualizará al final)
+            stockItem.reservedQuantity -= 1;
+            
+            // 4. Registrar la transacción de reclamo (como una "venta" especial)
+            const newClaimTransaction = {
+                id: Date.now(), 
+                reference: stockItem.reference,
+                type: 'Claim', // Nuevo tipo: Reclamado/Consumido
+                date: transaction.claimedDate, 
+                displayDate: new Date(transaction.claimedDate + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }),
+                quantityChange: -1,
+                sourceTransactionId: transactionId // Enlazar a la reserva original
+            };
+            data.transactions.push(newClaimTransaction);
+
+            // 5. Recalcular el stock vendible
+            stockItem.sellableQuantity = calculateSellable(stockItem);
+
+            saveData();
+            renderAll();
+            showMessage("Reserva Reclamada", `Reserva de ${stockItem.reference} reclamada con éxito. El stock total se ha reducido en 1.`);
+        }
+
+
+        /**
          * Renderiza la lista de transacciones.
          */
         function renderTransactions() {
@@ -595,32 +738,57 @@
             }
             noTransactionsMessage.classList.add('hidden');
             
-            // Ordenar por fecha (más reciente primero) usando el campo 'date' ISO string
+            // Ordenar por fecha (más reciente primero)
             const sortedTransactions = [...data.transactions].sort((a, b) => {
-                // Usar 'date' para ordenar. Para transacciones antiguas que no tienen 'date', usar 'id' (timestamp)
                 const dateA = a.date || new Date(a.id).toISOString().split('T')[0];
                 const dateB = b.date || new Date(b.id).toISOString().split('T')[0];
-                return dateB.localeCompare(dateA); // Más reciente primero (descendente)
+                return dateB.localeCompare(dateA);
             });
 
             sortedTransactions.forEach(t => {
-                const isSale = t.type === 'Sale';
-                const bgColor = isSale ? 'bg-red-50' : 'bg-emerald-50';
-                const textColor = isSale ? 'text-red-700' : 'text-emerald-700';
-                const verb = isSale ? 'Venta' : 'Devolución';
-                // Iconos más descriptivos
-                const iconPath = isSale 
-                    ? 'M17 14l-5-5-5 5m0 5h10' // Flecha hacia abajo/fuera (venta)
-                    : 'M7 10l5 5 5-5m0-5H7';  // Flecha hacia arriba/dentro (devolución)
-
+                let bgColor, textColor, verb, iconPath, extraInfo = '', buttonHtml = '';
                 const stockName = data.stock.find(i => i.reference === t.reference)?.name || 'Modelo Desconocido';
                 
-                // Usar la fecha formateada guardada (displayDate), o si es una transacción antigua, generar el formato local
+                // Usar la fecha formateada guardada
                 const displayDate = t.displayDate || new Date(t.id).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                if (t.type === 'Sale') {
+                    bgColor = 'bg-red-50';
+                    textColor = 'text-red-700';
+                    verb = 'Venta';
+                    iconPath = 'M17 14l-5-5-5 5m0 5h10'; // Flecha hacia abajo/fuera
+                } else if (t.type === 'Return') {
+                    bgColor = 'bg-emerald-50';
+                    textColor = 'text-emerald-700';
+                    verb = 'Devolución';
+                    iconPath = 'M7 10l5 5 5-5m0-5H7';  // Flecha hacia arriba/dentro
+                } else if (t.type === 'Reservation') {
+                    bgColor = 'bg-blue-50';
+                    textColor = 'text-blue-700';
+                    verb = 'Reservado';
+                    iconPath = 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m.356-2H5s-2 1.333-2 3c0 3.866 3.582 7 8 7s8-3.134 8-7c0-1.667-1.428-3-2.5-3h-.012z'; // Icono de reserva/reloj
+                    
+                    if (t.claimed) {
+                        extraInfo = `<p class="text-xs text-gray-500 mt-0.5 font-semibold">RECLAMADO: ${new Date(t.claimedDate).toLocaleDateString('es-ES')}</p>`;
+                        buttonHtml = '';
+                    } else {
+                        // Botón para reclamar la reserva si no ha sido reclamada
+                        buttonHtml = `
+                            <button onclick="handleClaimReservation(${t.id})" class="ml-4 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1 px-3 rounded-xl transition duration-150 shadow-sm">
+                                Reclamar Stock
+                            </button>`;
+                    }
+                } else if (t.type === 'Claim') {
+                    bgColor = 'bg-emerald-100';
+                    textColor = 'text-gray-800';
+                    verb = 'Reclamo de Reserva';
+                    iconPath = 'M9 12l2 2 4-4m5.618-4.24c1.292 1.256 2.157 2.92 2.378 4.706C21.75 12.87 21 16 19.5 16s-2.25-3.13-3.618-4.24M5 12h14'; // Checkmark
+                    extraInfo = `<p class="text-xs text-gray-500 mt-0.5">Venta vinculada a reserva.</p>`;
+                }
 
 
                 const listItem = document.createElement('li');
-                listItem.className = `${bgColor} p-4 rounded-xl shadow-md flex justify-between items-center transform transition duration-200 hover:scale-[1.01] border-l-4 ${isSale ? 'border-red-500' : 'border-emerald-500'}`;
+                listItem.className = `${bgColor} p-4 rounded-xl shadow-md flex justify-between items-center transform transition duration-200 hover:scale-[1.01] border-l-4 ${t.type === 'Reservation' ? (t.claimed ? 'border-gray-500' : 'border-blue-500') : (t.type === 'Sale' ? 'border-red-500' : 'border-emerald-500')}`;
 
                 listItem.innerHTML = `
                     <div class="flex items-center">
@@ -628,18 +796,22 @@
                         <div>
                             <p class="font-bold ${textColor} text-base">${verb} de ${t.reference}</p>
                             <p class="text-xs text-gray-600 mt-0.5">${stockName}</p>
+                            ${extraInfo}
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="text-xs font-medium text-gray-500">${displayDate}</p>
-                        <p class="font-extrabold ${textColor} text-lg">${t.quantityChange > 0 ? '+' : ''}${t.quantityChange}</p>
+                    <div class="text-right flex items-center">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">${displayDate}</p>
+                            <p class="font-extrabold ${textColor} text-lg">${t.type !== 'Reservation' ? (t.quantityChange > 0 ? '+' : '') + t.quantityChange : 'Unidad'}</p>
+                        </div>
+                        ${buttonHtml}
                     </div>
                 `;
                 list.appendChild(listItem);
             });
         }
         
-        // --- Gestión de Métricas (NUEVO) ---
+        // --- Gestión de Métricas (Existente) ---
 
         /**
          * Calcula y renderiza las métricas generales.
@@ -651,14 +823,19 @@
 
             // Métricas de Transacciones
             const totalTransactions = data.transactions.length;
-            const totalSales = data.transactions.filter(t => t.type === 'Sale').length;
-            const totalReturns = data.transactions.filter(t => t.type === 'Return').length;
+            
+            // Cuentas de ventas netas (solo Sale y Claim)
+            const salesTransactions = data.transactions.filter(t => t.type === 'Sale' || t.type === 'Claim');
+            const returnTransactions = data.transactions.filter(t => t.type === 'Return');
+
+            const totalSales = salesTransactions.length;
+            const totalReturns = returnTransactions.length;
             const netSales = totalSales - totalReturns;
             
-            // Tasa de Devolución (Devoluciones / Total Transacciones, si totalTransactions > 0)
-            const absoluteTransactions = totalSales + totalReturns;
-            const returnRate = absoluteTransactions > 0 
-                ? ((totalReturns / absoluteTransactions) * 100).toFixed(1) 
+            // Tasa de Devolución (Devoluciones / Ventas Reales, si totalSales > 0)
+            const absoluteSalesReturns = totalSales + totalReturns;
+            const returnRate = absoluteSalesReturns > 0 
+                ? ((totalReturns / absoluteSalesReturns) * 100).toFixed(1) 
                 : 0;
 
             // Renderizar en el Modal
@@ -678,6 +855,78 @@
                  rateElement.classList.add('text-gray-900');
             }
         }
+        
+        // --- Funciones de Configuración (Exportar/Importar) ---
+
+        /**
+         * Exporta el estado completo de la aplicación a un archivo JSON.
+         */
+        function exportData() {
+            // Aseguramos que la exportación siempre use los últimos datos guardados
+            const exportData = localStorage.getItem(STORAGE_KEY);
+            const filename = `promotracker_backup_${new Date().toISOString().split('T')[0]}.json`;
+            
+            // Crear un Blob (Binary Large Object) con el contenido JSON
+            const blob = new Blob([exportData], { type: 'application/json' });
+            
+            // Crear un enlace de descarga
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            
+            // Simular el clic para iniciar la descarga
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showMessage("Exportación Exitosa", `Se ha descargado el archivo "${filename}" con todos tus datos. Guárdalo bien.`);
+            closeModal('configModal');
+        }
+
+        /**
+         * Maneja la importación de un archivo JSON para restaurar el estado.
+         * @param {Event} event - Evento de envío del formulario.
+         */
+        function handleImport(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showMessage("Error de Importación", "Por favor, selecciona un archivo JSON válido.", 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validación de estructura mínima
+                    if (!Array.isArray(importedData.stock) || !Array.isArray(importedData.transactions)) {
+                        showMessage("Error de Validación", "El archivo no tiene la estructura de datos correcta (debe contener 'stock' y 'transactions').", 'error');
+                        return;
+                    }
+                    
+                    // Almacenar y restaurar los datos
+                    data = importedData;
+                    saveData();
+                    renderAll();
+                    closeModal('configModal');
+                    showMessage("Restauración Exitosa", `Datos importados y restaurados correctamente desde el archivo "${file.name}".`);
+
+                } catch (jsonError) {
+                    showMessage("Error de Parseo", "El archivo seleccionado no es un JSON válido.", 'error');
+                }
+            };
+
+            reader.onerror = function() {
+                showMessage("Error de Lectura", "No se pudo leer el archivo.", 'error');
+            };
+
+            reader.readAsText(file);
+        }
 
         // --- Inicialización y Eventos ---
 
@@ -685,6 +934,11 @@
          * Renderiza todo el dashboard (stock y transacciones).
          */
         function renderAll() {
+            // Recalcular sellableQuantity para todos los items al renderizar
+            data.stock.forEach(item => {
+                item.sellableQuantity = calculateSellable(item);
+            });
+
             renderStock();
             renderTransactions();
             renderMetrics(); // Renderizar métricas también
@@ -719,6 +973,12 @@
         document.getElementById('openMetricsModalBtn').addEventListener('click', () => {
             renderMetrics(); // Asegurar que las métricas estén actualizadas
             openModal('metricsModal');
+        });
+        
+        // Event Listener para abrir el modal de Configuración (NUEVO)
+        document.getElementById('openConfigModalBtn').addEventListener('click', () => {
+            document.getElementById('importFile').value = ''; // Limpiar input de archivo al abrir
+            openModal('configModal');
         });
 
         // Carga inicial de datos al cargar la página
